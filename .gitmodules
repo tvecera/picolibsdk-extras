@@ -1,0 +1,6 @@
+[submodule "sdk/pico-lib-sdk"]
+	path = sdk/pico-lib-sdk
+	url = https://github.com/Panda381/PicoLibSDK
+[submodule "sdk/pico-sdk"]
+	path = sdk/pico-sdk
+	url = https://github.com/raspberrypi/pico-sdk

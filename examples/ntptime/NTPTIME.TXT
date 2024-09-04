@@ -1,0 +1,8 @@
+^Wifi NTP example^0
+
+Simple get time from NTP
+pool example.
+
+^WA^0 ....... get time
+^WX^0 ....... screenshot
+^WY^0 ....... quit

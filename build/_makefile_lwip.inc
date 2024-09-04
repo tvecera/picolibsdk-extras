@@ -1,0 +1,29 @@
+DEFINE += -D CYW43_LWIP=1
+DEFINE += -D LWIP_IPV4=1
+DEFINE += -D LWIP_UDP=1
+DEFINE += -D LWIP_IGMP=1
+DEFINE += -D LWIP_CHECKSUM_CTRL_PER_NETIF=1
+
+# PicoSDK lib/lwip
+LWIPDIR = ${PICO_SDK_PATH}/lib/lwip/src/
+include ${LWIPDIR}/Filelists.mk
+INCLUDE_DIRS += -I$(LWIPDIR)/include
+CSRC += ${COREFILES}
+CSRC += ${CORE4FILES}
+CSRC += ${NETIFFILES}
+CSRC += ${APIFILES}
+CSRC += ${HTTPFILES}
+
+ifeq ($(USE_IPV6),0)
+	DEFINE += -D LWIP_IPV6=0
+endif
+
+ifeq ($(USE_IPV6),1)
+	DEFINE += -D LWIP_IPV6=1
+	CSRC += ${CORE6FILES}
+endif
+
+# PicoSDK rp2_common/pico_lwip
+PICO_LWIP_LIB_DIR = ${PICO_SDK_PATH}/src/rp2_common/pico_lwip
+INCLUDE_DIRS += -I$(PICO_LWIP_LIB_DIR)/include
+CSRC += ${PICO_LWIP_LIB_DIR}/lwip_nosys.c

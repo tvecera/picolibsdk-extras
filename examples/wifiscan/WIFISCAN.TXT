@@ -1,0 +1,7 @@
+^Wifi SCAN example^0
+
+Simple Wifi scan example.
+
+^WA^0 ....... scan
+^WX^0 ....... screenshot
+^WY^0 ....... quit

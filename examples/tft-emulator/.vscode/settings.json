@@ -1,0 +1,4 @@
+{
+    "makefile.configureOnOpen": true,
+    "makefile.configureOnEdit": true
+}

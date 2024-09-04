@@ -1,0 +1,6 @@
+^Bluetooth Keyboard^0
+
+Simple bluetooth keyboard
+example.
+
+^WY^0 ....... quit

@@ -1,0 +1,7 @@
+^YSD Card reader^0
+
+Use Picopad as simple
+SD Card reader.
+
+^WX^0 ....... screenshot
+^WY^0 ....... quit

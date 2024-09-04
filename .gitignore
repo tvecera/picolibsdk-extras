@@ -1,0 +1,10 @@
+.idea
+*.bin
+*.hex
+*.lst
+*.map
+*.sym
+*.siz
+/.cache/
+/build/arm-none-eabi/
+/examples/**/build
