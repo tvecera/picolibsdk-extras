@@ -13,6 +13,7 @@ CSRC += $(PICO_SDK_GLUE_LIB_DIR)/time.c
 CSRC += $(PICO_SDK_GLUE_LIB_DIR)/panic.c
 CSRC += $(PICO_SDK_GLUE_LIB_DIR)/rand.c
 CSRC += $(PICO_SDK_GLUE_LIB_DIR)/dummy_syscalls.c
+CSRC += $(PICO_SDK_GLUE_LIB_DIR)/runtime.c
 
 # PicoSDK common/hardware_claim
 HARDWARE_CLAIM_LIB_DIR = ${PICO_SDK_PATH}/src/common/hardware_claim
