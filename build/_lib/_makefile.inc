@@ -47,6 +47,8 @@ CSRC +=  ${PICO_LIB_SDK_PATH}/_lib/bigint/bernoulli.c
 CSRC +=  ${PICO_LIB_SDK_PATH}/_lib/real/real.c
 
 # ASM sdk
-ASRC +=  ${PICO_LIB_SDK_PATH}/_lib/src/vga_blitkey.S
+ifeq (${CPUCLASS},RP2040)
+ASRC += ${PICO_LIB_SDK_PATH}/_lib/src/vga_blitkey.S
+endif
 
 #ASRC +=  ${PICO_LIB_SDK_PATH}/_lib/3d_src/lib_d3fixed_asm.S

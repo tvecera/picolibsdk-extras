@@ -13,6 +13,8 @@ else
     NUM_CORES=1
 fi
 
+NUM_CORES=$((NUM_CORES / 2))
+
 echo "Use ${NUM_CORES} cores ..."
 
 echo "Clean..."

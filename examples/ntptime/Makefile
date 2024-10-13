@@ -1,21 +1,11 @@
 APP_PATH = $(CURDIR)
-PICO_LIB_SDK_EXTRAS_PATH = ../picolibsdk-extras
+PICO_LIB_SDK_EXTRAS_PATH = ../../../picolibsdk-extras
 #PICO_LIB_SDK_PATH = ${PICO_LIB_SDK_EXTRAS_PATH}/sdk/pico-lib-sdk
 #PICO_SDK_PATH = ${PICO_LIB_SDK_EXTRAS_PATH}/sdk/pico-sdk
 
 TARGET=NTPTIME
 DEVICE=picopad10
 DEVCLASS=picopad
-
-#USE_WIFI = 1
-#USE_LWIP = 1
-#USE_IPV6 = 1
-#USE_BTSTACK = 1
-#USE_CLASSIC = 1
-#USE_BLE = 1
-#USE_SBC = 1
-#USE_TINYUSB = 1
-#USE_KEYBOARD_BT = 1
 
 # ASM source files
 ASRC +=
@@ -26,9 +16,9 @@ CSRC +=
 # C++ source files
 SRC +=
 
-USE_WIFI = 1
-USE_LWIP = 1
 USE_DEBUG = 1
+USE_LWIP = 1
+USE_BTSTACK = 0
 SRC += src/main.cpp
 
 # Makefile includes

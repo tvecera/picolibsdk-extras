@@ -4,6 +4,9 @@
 #include "hardware/claim.h"
 #include <assert.h>
 
+#define PICO_SHARED_IRQ_HANDLER_HIGHEST_ORDER_PRIORITY 0xff
+#define PICO_SHARED_IRQ_HANDLER_LOWEST_ORDER_PRIORITY 0x00
+
 static uint8_t user_irq_claimed;
 static inline uint8_t *user_irq_claimed_ptr(void) {
 	return &user_irq_claimed;

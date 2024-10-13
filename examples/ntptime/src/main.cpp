@@ -4,9 +4,7 @@
 #define NTP_DELTA 2208988800 // seconds between 1 Jan 1900 and 1 Jan 1970
 #define NTP_RESEND_TIME (10 * 1000)
 
-#define WIFI_SSID     "WIFI_SSID"
-#define WIFI_PASSWORD "WIFI_PASSWORD"
-
+#include "config.h"
 #include "pico/cyw43_arch.h"
 #include "lwip/dns.h"
 

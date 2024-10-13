@@ -4,7 +4,7 @@ aplikace mimo adresář samotného SDK.
 
 Aktuální verze je kompatibilní s těmito verzemi:
 
-* PicoLibSDK – 1.13
+* PicoLibSDK – 2.00
 * Pico SDK – 2.0.0
 * Raspberry Pi Pico RP2040
 
@@ -130,14 +130,14 @@ TARGET=TEMPLATE
 DEVICE=picopad10
 DEVCLASS=picopad
 
-# Prepinac pridani pico/cyw43 do vaseho projektu  
-#USE_WIFI = 1
-# Prepinac pridani pico/lwip do vaseho projektu
-#USE_LWIP = 1
-# Prepinac pridani podpory pro IPv6 do pico/lwip
-#USE_IPV6 = 1
-# Prepinac pridani pico/btstack do vaseho projektu
-#USE_BTSTACK = 1
+# Prepinac pro ignorovani pico/cyw43 ve vasem projektu  
+#USE_WIFI = 0
+# Prepinac pro ignorovani pico/lwip do vaseho projektu
+#USE_LWIP = 0
+# Prepinac pro ignorovani podpory pro IPv6 v pico/lwip
+#USE_IPV6 = 0
+# Prepinac ignorovani pico/btstack ve vasem projektu
+#USE_BTSTACK = 0
 # Prepinac pro pouziti BT_CLASSIC v pico/btstack
 #USE_CLASSIC = 1
 # Prepinac pro pouziti BT_BLE v pico/btstack
@@ -145,8 +145,8 @@ DEVCLASS=picopad
 #USE_BLE = 1
 # Prepinac pro pouziti BT SBC decoder / encoder v pico/btstack
 #USE_SBC = 1
-# Prepinac pridani pico/tinyusb do vaseho projektu
-#USE_TINYUSB = 1
+# Prepinac ignorovani pico/tinyusb ve vasem projektu
+#USE_TINYUSB = 0
 # Prepinac pridani KeyboardBT do vaseho projektu
 #USE_KEYBOARD_BT = 1
 # Prepinac zapnuti DEBUG u CYW43 a BTSTACK

@@ -9,3 +9,4 @@
 /.cache/
 /build/arm-none-eabi/
 /examples/**/build
+/examples/ntptime/src/config.h
