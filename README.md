@@ -4,9 +4,9 @@ aplikace mimo adresář samotného SDK.
 
 Aktuální verze je kompatibilní s těmito verzemi:
 
-* PicoLibSDK – 2.00
+* PicoLibSDK – 2.01
 * Pico SDK – 2.0.0
-* Raspberry Pi Pico RP2040
+* Raspberry Pi Pico RP2040 / RP2350
 
 Knihovny:
 

@@ -1,0 +1,4 @@
+PSRAM_LIB_DIR = ${PICO_LIB_SDK_EXTRAS_PATH}/lib/psram
+INCLUDE_DIRS += -I${PSRAM_LIB_DIR}/include
+
+CSRC += ${PSRAM_LIB_DIR}/psram.c

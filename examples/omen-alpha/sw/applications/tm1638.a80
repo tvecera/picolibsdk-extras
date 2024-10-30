@@ -1,0 +1,222 @@
+            .ORG    8000h ; Origin set to address 8000h
+            .ENT    $ ; Entry point
+            DI       ; Disable interrupts
+            LXI     sp,0 ; Initialize stack pointer to end of RAM 0xFFFF
+            JMP     test ; Jump to start of the main program
+
+; PINS OF PORTC
+TM1638_CLK  EQU     1 ; Define TM1638 clock pin as bit 1
+TM1638_STB  EQU     0 ; Define TM1638 strobe pin as bit 0
+TM1638_DIO  EQU     7 ; Define TM1638 data I/O pin as bit 7
+
+PPI_CTRL    EQU     7 ; Control register for PPI (Parallel Peripheral Interface)
+PPI_PORTC   EQU     6 ; Port C register for PPI
+
+            .MACRO  CLK1 ; Macro to set CLK pin high
+            MVI     a,TM1638_CLK * 2 + 1 ; PORT C - SET Single Bit operation (CLOCK_TM << 1) | 1
+            OUT     PPI_CTRL ; Output to PPI control to set CLK high
+            .ENDM
+            .MACRO  CLK0 ; Macro to set CLK pin low
+            MVI     a,TM1638_CLK * 2 ; PORT C - RESET Single Bit operation (CLOCK_TM << 1)
+            OUT     PPI_CTRL ; Output to PPI control to set CLK low
+            .ENDM
+
+            .MACRO  STB1 ; Macro to set STB pin high
+            MVI     a,TM1638_STB * 2 + 1 ; PORT C - SET Single Bit operation (STROBE_TM << 1) | 1
+            OUT     PPI_CTRL ; Output to PPI control to set STB high
+            .ENDM
+            .MACRO  STB0 ; Macro to set STB pin low
+            MVI     a,TM1638_STB * 2 ; PORT C - RESET Single Bit operation (STROBE_TM << 1)
+            OUT     PPI_CTRL ; Output to PPI control to set STB low
+            .ENDM
+
+TM1638_SEND:
+            MVI     b,8 ; Load loop counter for 8 bits into register B
+TM1638_SENDL:
+            CLK0     ; Set CLK low to prepare for data shift
+            MOV     a,c ; Move data from register C to accumulator
+            RRC      ; Rotate right through carry to shift bit
+            MOV     c,a ; Move rotated data back to register C
+            MVI     a,TM1638_DIO * 2 ; Set DIO low for output
+            ACI     0 ; Add immediate with carry to adjust DIO bit
+            OUT     PPI_CTRL ; Output adjusted data to PPI control
+            DCR     b ; Decrement bit counter
+            CLK1     ; Set CLK high to shift the bit
+            JNZ     TM1638_SENDL ; Repeat if counter not zero
+            RET      ; Return from subroutine
+
+TM1638_SENDCOMMAND:
+            STB0     ; Set STB low to begin command
+            CALL    TM1638_SEND ; Call TM1638_SEND to send command in C
+            STB1     ; Set STB high to end command
+            RET      ; Return from subroutine
+
+TM1638_SETUP:
+            MVI     c,87h + 4 ; Load setup command (display on, brightness) into C
+            CALL    TM1638_SENDCOMMAND ; Send setup command
+            STB0     ; Set STB low to begin data
+            CLK0     ; Set CLK low for initialization pulse
+            CLK1     ; Set CLK high to complete pulse
+            STB1     ; Set STB high to end setup
+            RET      ; Return from setup
+
+; Subroutine to control a specific LED
+; Register D: LED index (0 for LED1, 1 for LED2, ..., 7 for LED8)
+; Register E: LED state (0 to turn off, 1 to turn on)
+TURN_LED:
+            MVI     c,40h ; Set sequential address mode in C
+            CALL    TM1638_SENDCOMMAND ; Send the address mode command
+            STB0     ; Set STB low to start LED command
+
+; Calculate LED address based on D (LED index)
+            MOV     a,d ; Move LED index from D to accumulator
+            ANI     07h ; Mask upper nibble to keep values 0-7
+            MOV     c,a ; Move masked index to C
+            ADD     a ; Double the value by adding to itself
+            ORI     01h ; Set the lowest bit to 1 (for `X0X1` pattern)
+            ORI     0C0h ; Combine with base command (C0) to set high nibble
+            MOV     c,a ; Move the calculated address back to C
+
+            CALL    TM1638_SEND ; Send LED address
+            MOV     c,e ; Set data in C (0 or 1) based on E to turn off or on
+            CALL    TM1638_SEND ; Send data to control LED
+            STB1     ; Set STB high to end LED command
+            RET      ; Return from subroutine
+
+DISPLAY_ZERO:
+            MVI     c,0x44 ; Command to set single address mode
+            CALL    TM1638_SENDCOMMAND ; Send the command to TM1638
+            STB0     ; Set STB low to start data transfer
+            MVI     c,0xC0 ; Address for segment position 0
+            CALL    TM1638_SEND ; Send address for segment position 0
+            MVI     c,0x3F ; Data to display "0" (binary 00111111)
+            CALL    TM1638_SEND ; Send data to turn on segments for "0"
+            STB1     ; Set STB high to end data transfer
+            RET      ; Return from subroutine
+
+; Generic subroutine to display a character on a specific segment position
+; Inputs:
+;   D - Display position (0-7)
+;   E - Character pattern (segment data)
+DISPLAY_CHAR:
+            MVI     c,0x44 ; Command to set single address mode
+            CALL    TM1638_SENDCOMMAND ; Send the command to TM1638
+
+            STB0     ; Set STB low to start data transfer
+            MOV     a,d ; Move display position index to A
+            ANI     07h ; Mask to ensure position is within 0-7
+            RLC      ; Shift left by 1 to align with address pattern
+            ORI     0xC0 ; Add base address for segment position
+            MOV     c,a ; Load calculated address into C
+            CALL    TM1638_SEND ; Send address for the display position
+
+            MOV     c,e ; Load character pattern into C
+            CALL    TM1638_SEND ; Send character pattern to light up segments
+            STB1     ; Set STB high to end data transfer
+            RET      ; Return from subroutine
+
+; Delay subroutine for approximately 250ms on a 1.8432 MHz 8085 processor
+; Target cycles: 460,800 cycles
+DELAY_250MS:
+            MVI     B,01h ; Outer loop count = 1 (4 cycles)
+DELAY_LOOP1:
+            MVI     C,83h ; Middle loop count = 131 (7 cycles)
+; Middle Loop (DELAY_LOOP2) runs 131 times
+DELAY_LOOP2:
+            MVI     A,0FAh ; Inner loop count = 250 (7 cycles)
+; Inner Loop (DELAY_LOOP3) runs 250 times
+DELAY_LOOP3:
+            DCR     A ; 4 cycles per decrement
+            JNZ     DELAY_LOOP3 ; 10 cycles if jump taken, 7 cycles if not
+
+; Total cycles for inner loop (DELAY_LOOP3):
+; - DCR A + JNZ (if jumping) = 4 + 10 = 14 cycles per iteration
+; - Runs 250 times: 250 * 14 = 3500 cycles
+
+            DCR     C ; 4 cycles per decrement
+            JNZ     DELAY_LOOP2 ; 10 cycles if jump taken, 7 cycles if not
+
+; Total cycles for middle loop (DELAY_LOOP2):
+; - MVI A + (DELAY_LOOP3) = 7 + 3500 = 3507 cycles per iteration
+; - DCR C + JNZ (if jumping) = 4 + 10 = 14 cycles
+; - Total per middle loop iteration: 3507 + 14 = 3521 cycles
+; - Runs 131 times: 131 * 3521 = 460,351 cycles
+
+            DCR     B ; 4 cycles per decrement
+            JNZ     DELAY_LOOP1 ; 10 cycles if jump taken, 7 cycles if not
+
+; Outer loop only runs once, adding a few cycles to the total
+; Remaining cycles to reach 460,800 can be adjusted with small NOPs if necessary
+
+            RET      ; 10 cycles
+TEST:
+            CALL    TM1638_SETUP ; Initialize the TM1638 display
+            MVI     D,0 ; Set display position to 0
+            MVI     E,CHAR_T ; Load character pattern for "T" into E
+            CALL    DISPLAY_CHAR ; Display "T" on the first segment
+            MVI     D,1 ; Set display position to 1
+            MVI     E,CHAR_O ; Load character pattern for "O" into E
+            CALL    DISPLAY_CHAR ; Display "O" on the second segment
+            MVI     D,2 ; Set display position to 2
+            MVI     E,CHAR_M ; Load character pattern for "M" into E
+            CALL    DISPLAY_CHAR ; Display "M" on the third segment
+            MVI     D,3 ; Set display position to 3
+            MVI     E,CHAR_A ; Load character pattern for "A" into E
+            CALL    DISPLAY_CHAR ; Display "A" on the fourth segment
+            MVI     D,4 ; Set display position to 4
+            MVI     E,CHAR_S ; Load character pattern for "S" into E
+            CALL    DISPLAY_CHAR ; Display "S" on the fifth segment
+
+            MVI     d,0 ; Start with LED1 (index 0)
+            MVI     e,0
+
+LOOP:
+            MVI     e,1 ; Set E to 1 (turn on)
+            CALL    TURN_LED ; Turn on LED at index in D
+            CALL    DELAY_250MS ; Wait 1 second
+            MVI     e,0 ; Set E to 0 (turn off)
+            CALL    TURN_LED ; Turn off LED at index in D
+            CALL    DELAY_250MS ; Wait 1 second before next LED
+            INR     d ; Increment D to point to the next LED
+            CPI     8 ; Check if D has reached 8 (beyond LED8)
+            JNZ     LOOP ; If not, continue loop
+            MVI     d,0 ; Reset to LED1 after reaching LED8
+            JMP     LOOP ; Repeat LED sequence indefinitely
+
+; Define segment patterns for numbers and letters
+CHAR_0      EQU     0x3F ; 0
+CHAR_1      EQU     0x06 ; 1
+CHAR_2      EQU     0x5B ; 2
+CHAR_3      EQU     0x4F ; 3
+CHAR_4      EQU     0x66 ; 4
+CHAR_5      EQU     0x6D ; 5
+CHAR_6      EQU     0x7D ; 6
+CHAR_7      EQU     0x07 ; 7
+CHAR_8      EQU     0x7F ; 8
+CHAR_9      EQU     0x6F ; 9
+CHAR_A      EQU     0x77 ; A
+CHAR_B      EQU     0x7C ; B
+CHAR_C      EQU     0x39 ; C
+CHAR_D      EQU     0x5E ; D
+CHAR_E      EQU     0x79 ; E
+CHAR_F      EQU     0x71 ; F
+CHAR_G      EQU     0x3D ; G
+CHAR_H      EQU     0x76 ; H
+CHAR_I      EQU     0x30 ; I
+CHAR_J      EQU     0x1E ; J
+CHAR_K      EQU     0x75 ; K
+CHAR_L      EQU     0x38 ; L
+CHAR_M      EQU     0x37 ; M
+CHAR_N      EQU     0x54 ; N
+CHAR_O      EQU     0x3F ; O
+CHAR_P      EQU     0x73 ; P
+CHAR_Q      EQU     0x67 ; Q
+CHAR_R      EQU     0x50 ; R
+CHAR_S      EQU     0x6D ; S
+CHAR_T      EQU     0x78 ; T
+CHAR_U      EQU     0x3E ; U
+CHAR_V      EQU     0x3E ; V
+CHAR_W      EQU     0x2E ; W
+CHAR_X      EQU     0x76 ; X
+CHAR_Y      EQU     0x6E ; Y
+CHAR_Z      EQU     0x5B ; Z

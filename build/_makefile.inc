@@ -28,12 +28,14 @@ ADD_PICO_SDK_GLUE = 1
 ADD_WIFI = 1
 ADD_BTSTACK = 1
 USE_CLASSIC = 1
-ADD_TINYUSB = 1
+ADD_TINYUSB = 0
 ADD_NO_ERROR = 1
 ADD_LWIP = 0
 
 ADD_HID_BLUETOOTH = 0
 ADD_KEYBOARD_BT = 0
+ADD_PSRAM = 0
+ADD_HSTX_DVI = 0
 
 ifeq (${DEVICE},picopad20)
 DEFINE += -D PICO_RP2350=1 -D PICO_PLATFORM=rp2350
@@ -45,6 +47,8 @@ DEFINE += -D PICO_RP2350=1 -D PICO_PLATFORM=rp2350
 ADD_WIFI = 0
 ADD_BTSTACK = 0
 USE_CLASSIC = 0
+ADD_PSRAM = 1
+ADD_HSTX_DVI = 1
 else
 DEFINE += -D PICO_RP2040_B0_SUPPORTED=1 -D PICO_RP2040_B1_SUPPORTED=1 -D PICO_RP2040_B2_SUPPORTED=1
 DEFINE += -D PICO_RP2040=1 -D PICO_PLATFORM=rp2040
@@ -65,8 +69,8 @@ ifeq ($(USE_BTSTACK),0)
 endif
 
 ##### USE_TINYUSB
-ifeq ($(USE_TINYUSB),0)
-	ADD_TINYUSB = 0
+ifeq ($(USE_TINYUSB),1)
+	ADD_TINYUSB = 1
 endif
 
 ##### USE LWIP
@@ -85,6 +89,14 @@ ifeq ($(USE_DEBUG),1)
 else
 	DEFINE += -D NDEBUG=1
 	DEFINE += -D PICO_CYW43_ARCH_DEBUG_ENABLED=0
+endif
+
+ifeq ($(USE_PSRAM),1)
+	ADD_PSRAM = 1
+endif
+
+ifeq ($(USE_HSTX_DVI),1)
+	ADD_HSTX_DVI = 1
 endif
 
 ifeq ($(ADD_PICO_SDK_GLUE),1)
@@ -109,6 +121,12 @@ ifeq ($(ADD_HID_BLUETOOTH),1)
 endif
 ifeq ($(ADD_KEYBOARD_BT),1)
 	include ${PICO_LIB_SDK_EXTRAS_PATH}/build/_makefile_keyboard_bt.inc
+endif
+ifeq ($(ADD_PSRAM),1)
+	include ${PICO_LIB_SDK_EXTRAS_PATH}/build/_makefile_psram.inc
+endif
+ifeq ($(ADD_HSTX_DVI),1)
+	include ${PICO_LIB_SDK_EXTRAS_PATH}/build/_makefile_hstx_dvi.inc
 endif
 
 ifeq ($(ADD_NO_ERROR),1)

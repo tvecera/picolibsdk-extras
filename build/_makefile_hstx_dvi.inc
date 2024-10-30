@@ -1,0 +1,6 @@
+HSTX_DVI_LIB_DIR = ${PICO_LIB_SDK_EXTRAS_PATH}/lib/hstx_dvi
+INCLUDE_DIRS += -I${HSTX_DVI_LIB_DIR}/include
+
+DEFINE += -D USE_HSTX=1
+
+CSRC += ${HSTX_DVI_LIB_DIR}/hstx_dvi.c

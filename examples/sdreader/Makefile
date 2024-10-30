@@ -18,6 +18,7 @@ SRC +=
 
 USE_WIFI = 0
 USE_BTSTACK = 0
+USE_TINYUSB = 1
 DEFINE += -D CFG_TUSB_CONFIG_FILE=\"custom_tusb_config.h\"
 
 CSRC += src/main.c
