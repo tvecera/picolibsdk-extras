@@ -51,9 +51,12 @@ int __no_inline_not_in_flash_func(main)() {
 	u64 write_time = 0;
 	size_t total_size = sizeof(mems_ram);
 
+	WaitMs(5000);
+	size_t psram_total_size = psram_size();
+	printf("Total PSRAM size: %d\n", psram_total_size);
+
 	while (True) {
-		LedFlip(LED1);
-		WaitMs(10000);
+		WaitMs(2000);
 
 		printf("%lu:\n", count);
 

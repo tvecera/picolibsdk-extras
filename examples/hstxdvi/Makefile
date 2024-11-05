@@ -7,7 +7,7 @@ PICO_LIB_SDK_EXTRAS_PATH = ../../../picolibsdk-extras
 TARGET=HSTXDVI
 DEVICE=pico2
 DEVCLASS=pico
-BOARD=pimoroni_pico_plus2
+#BOARD=pimoroni_pico_plus2
 
 # ASM source files
 ASRC +=
