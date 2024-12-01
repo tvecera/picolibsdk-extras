@@ -1,0 +1,73 @@
+# Compilers and flags
+CXX = g++
+CC = gcc
+LD = g++  # Use C++ linker for final executable
+CXXFLAGS = -std=c++17 -Wall -Wextra
+CFLAGS = -std=c11 -Wall -Wextra
+
+# Add SFML defined value
+DEFINES = -DSFML=1
+
+# Add SFML defined value to compiler flags
+CXXFLAGS += $(DEFINES)
+CFLAGS += $(DEFINES)
+
+# Target executable
+TARGET = $(BUILD_DIR)/hp16c
+
+# Build directory
+BUILD_DIR = build
+
+# C source files
+CSRC += nonpareil/arch.c
+CSRC += nonpareil/digit_ops.c
+CSRC += nonpareil/platform.c
+CSRC += nonpareil/proc_nut.c
+CSRC += nonpareil/voyager_lcd.c
+CSRC += src/nonpareil.c
+CSRC += src/sim.c
+
+# C++ source files
+SRCS += sfml/emulator/src/lib_draw.cpp
+SRCS += sfml/main.cpp
+
+# SFML includes and libraries (adjust these paths to your environment)
+SFML_LIB_DIR = /usr/local/Cellar/sfml/2.6.1/lib
+SFML_INCLUDE_DIR = /usr/local/Cellar/sfml/2.6.1/include/SFML
+
+# Link SFML libraries (Make sure to include the window and system components)
+SFML_LIBS = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
+
+# Compiler flags and linker flags for SFML
+INCLUDES = -I$(SFML_INCLUDE_DIR)
+LDFLAGS = -L$(SFML_LIB_DIR) $(SFML_LIBS)
+
+# Object files
+COBJS = $(patsubst %.c,$(BUILD_DIR)/%.o,$(CSRC))
+CPPOBJS = $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(SRCS))
+OBJS = $(COBJS) $(CPPOBJS)
+
+# Default target
+all: $(TARGET)
+
+# Build target executable
+$(TARGET): $(OBJS)
+	@echo "Linking executable: $@"
+	$(LD) $(CXXFLAGS) $(OBJS) -o $@ $(LDFLAGS)
+
+# Rule to compile C files
+$(BUILD_DIR)/%.o: %.c
+	@echo "Compiling C file: $< -> $@"
+	mkdir -p $(dir $@) # Ensure the directory exists
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+# Rule to compile C++ files
+$(BUILD_DIR)/%.o: %.cpp
+	@echo "Compiling C++ file: $< -> $@"
+	mkdir -p $(dir $@) # Ensure the directory exists
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
+
+# Clean up
+clean:
+	@echo "Cleaning up..."
+	rm -rf $(BUILD_DIR) $(TARGET)

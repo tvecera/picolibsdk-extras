@@ -1,9 +1,24 @@
-#include "include.h"
+/*
+ * Not finished yet.
+ */
+
+#include "../src/include.h"
+#include "keypad.h"
+
+uint8_t gpio_rows[] = {22, 13, 12, 11, 10};
+uint8_t gpio_cols[] = {6, 7, 8, 9};
+constexpr char key_map[20] = {
+	'A', 'B', 'C', 'D',
+	'1', '2', '3', 'E',
+	'4', '5', '6', 'F',
+	'7', '8', '9', '-',
+	'O', '0', '#', '+',
+};
 
 // HID key map array
 // The keyboard layout and the image of the virtual keyboard were taken from the JRPN emulator – Jovial Reverse Polish
 // Notation Calculators - https://jrpn.jovial.com/
-const u8 hid_key_map[] = {
+const uint8_t hid_key_map[] = {
 	HID_KEY_A, HID_KEY_B, HID_KEY_C, HID_KEY_D, HID_KEY_E, HID_KEY_F, HID_KEY_KEYPAD_7, HID_KEY_KEYPAD_8,
 	HID_KEY_KEYPAD_9, HID_KEY_KEYPAD_DIVIDE, HID_KEY_U, HID_KEY_T, HID_KEY_I, HID_KEY_Z, HID_KEY_K, HID_KEY_L,
 	HID_KEY_KEYPAD_4, HID_KEY_KEYPAD_5, HID_KEY_KEYPAD_6, HID_KEY_KEYPAD_MULTIPLY, HID_KEY_BRACKET_LEFT,
@@ -39,75 +54,33 @@ void get_key_idx(int *idx, bool *release) {
 }
 
 int main() {
+	DispInit(DISP_ROT);
 	DrawClear();
 	SelFont8x8();
 	UsbHostInit();
+	keypad_init(5, 4, gpio_rows, gpio_cols, key_map);
 
 	sim_display_init(nullptr);
 	sim_t *sim = sim_init(nullptr, nullptr, nullptr);
 	sim_start(sim);
 
 	u8 key = 0;
+	char ch = 0;
 	int idx = -1;
 	bool release = false;
-	u8 row = 3;
-	u8 col = 0;
-	DrawFrame(col_start[col], ROW_START_Y + (row * ROW_HEIGHT), BUTTON_W, BUTTON_H, COL_RED);
 
-	while (key != KEY_Y) {
-		get_key_idx(&idx, &release);
-		const char ch = KeyGetRel();
-		key = ch & KEY_MASK;
-
-		if (key != NOKEY) {
-			release = (ch & KEY_RELEASE) != 0;
-			if (key == KEY_X) {
-#if USE_SCREENSHOT    // use screen shots
-				if (release) ScreenShot();
-#endif
-			} else if (key == KEY_A) {
-				idx = row * 10 + col;
-			} else {
-				idx = -1;
-				if (release) {
-					u16 button_h = BUTTON_H;
-					if (col == 5 && row == 2) button_h += ROW_HEIGHT;
-					// Erase the old frame
-					DrawFrame(col_start[col], ROW_START_Y + (row * ROW_HEIGHT), BUTTON_W, button_h, COL_BLACK);
-					// Reset button height
-					button_h = BUTTON_H;
-					// Move the selection
-					switch (key) {
-						case KEY_LEFT:
-							col = (col > 0) ? col - 1 : 9;
-							break;
-						case KEY_RIGHT:
-							col = (col < 9) ? col + 1 : 0;
-							break;
-						case KEY_UP:
-							row = (row > 0) ? row - 1 : 3;
-							break;
-						case KEY_DOWN:
-							row = (row < 3) ? row + 1 : 0;
-							break;
-						default:
-							break;
-					}
-					if (col == 5 && row == 3) row = 2;
-					if (col == 5 && row == 2) button_h += ROW_HEIGHT;
-
-					// Draw the new frame
-					DrawFrame(col_start[col], ROW_START_Y + (row * ROW_HEIGHT), BUTTON_W, button_h, COL_RED);
-				}
+	while (true) {
+		ch = keypad_get_rel();
+		if (ch != NOCHAR) {
+			key = ch;
+			key &= KEY_MASK;
+			sim_key(sim, ch + 13, !(ch & KEY_RELEASE));
+		} else {
+			get_key_idx(&idx, &release);
+			if (idx != -1) {
+				sim_key(sim, idx, !release);
 			}
 		}
-
-		if (idx != -1) {
-			sim_key(sim, idx, !release);
-		}
 		sim_run(sim);
-		DispUpdate();
 	}
-
-	ResetToBootLoader();
 }

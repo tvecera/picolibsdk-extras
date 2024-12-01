@@ -1307,6 +1307,9 @@ const uint8_t LcdImg_RLE[2935] __attribute__((aligned(4))) = {
 	0x00, 0xA5, 0x00, 0x80, 0x07, 0x84, 0x04,
 };
 
+// The keyboard layout and the image of the virtual keyboard were taken from the JRPN emulator – Jovial Reverse Polish
+// Notation Calculators - https://jrpn.jovial.com/
+
 // format: compressed 8-bit paletted pixel graphics
 // image width: 320 pixels
 // image height: 240 lines

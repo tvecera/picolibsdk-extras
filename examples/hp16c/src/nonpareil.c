@@ -367,7 +367,7 @@ void fatal(int ret, char *format, ...) {
 		printf(format, ap);
 		va_end(ap);
 	}
-#if !POSIX
+#if !SFML
 	panic(format, ap);
 #else
 	exit(ret);

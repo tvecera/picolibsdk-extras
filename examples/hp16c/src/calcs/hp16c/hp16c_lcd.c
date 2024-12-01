@@ -1,14 +1,16 @@
 #include "hp16c_digits.h"
 
+const uint16_t col_start[] = {15, 45, 76, 106, 137, 167, 198, 228, 259, 289};
+
 #define DIGIT_WIDTH     18
 #define DIGIT_HEIGHT    31
 #define ANN_HEIGHT      12
 #define DIGIT_SPACING   6
 
-#define LCD_WIDTH			  270
+#define LCD_WIDTH			  264
 #define LCD_HIGHT			  51
-#define LCD_START_X			25
-#define LCD_START_Y			15
+#define LCD_START_X			27
+#define LCD_START_Y			16
 
 typedef struct {
 	bool enable;
@@ -89,7 +91,11 @@ void NOFLASH(draw_image_pal)(const uint8_t *src, const uint16_t *pal, int xs, in
 
 void sim_display_init(sim_t *sim UNUSED) {
 	DrawClear();
-	DrawImgRle(LcdPicopadImg_RLE, LcdPicopadImg_Pal, 0, 1, 320, 240);
+#ifndef PICO
+	DrawImgRle(LcdPicopadImg_RLE, LcdPicopadImg_Pal, 0, 0, 320, 240);
+#else
+	DrawImgRle(LcdImg_RLE, LcdImg_Pal, 0, 1, 320, 170);
+#endif
 	DispUpdate();
 }
 
@@ -131,6 +137,9 @@ void NOFLASH(sim_update_display)(sim_t *sim) {
 					);
 				}
 			}
+		} else if (segments & (1 << 6)) {
+			draw_image_pal(DigitsImg, DigitsImg_Pal, (6 * DIGIT_WIDTH), 0, LCD_START_X,
+										 LCD_START_Y + DIGIT_SPACING, DIGIT_WIDTH, DIGIT_HEIGHT,DIGITS_IMAGE_WIDTH);
 		}
 
 		if ((segments & SEGMENT_ANN) && (digit_index >= 2)) {
@@ -144,5 +153,6 @@ void NOFLASH(sim_update_display)(sim_t *sim) {
 			);
 		}
 	}
+
 	DispUpdate();
 }

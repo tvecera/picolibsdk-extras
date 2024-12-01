@@ -210,6 +210,7 @@ void log_printf(sim_t *sim, char *fmt, ...) {
 void log_send(sim_t *sim) {
 }
 
+#if !SFML
 static bool time_initialized = False;
 static uint64_t start_time;
 
@@ -223,3 +224,6 @@ bool elapsed_time_us_init(void) {
 
 	return time_initialized;
 }
+#else
+#include "../sfml/elapsed_time_us_posix.c"
+#endif
