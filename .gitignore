@@ -5,7 +5,6 @@
 *.map
 *.sym
 *.siz
-*.uf2
 /.cache/
 /build/arm-none-eabi/
 /examples/**/build

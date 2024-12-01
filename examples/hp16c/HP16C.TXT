@@ -1,0 +1,9 @@
+^HP16C emulator^0
+
+You can use USB keyboard
+to control the emulator.
+
+^WA^0 ...... Click
+^WARROWS^0 . Select
+^WX^0 ...... Screenshot
+^WY^0 ...... Quit

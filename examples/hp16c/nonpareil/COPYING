@@ -1,0 +1,51 @@
+Nonpareil - a calculator simulator
+Copyright 1995, 2003-2006 Eric L. Smith <eric@brouhaha.com>
+$Id$
+
+-----------------------------------------------------------------------------
+
+WARNING - PORTIONS OF NONPAREIL ARE COVERED BY DIFFERENT LICENSES
+
+Portions of the Nonpareil package as distributed by the author are
+covered by two different licenses.  The full package may only be
+redistributed in compliance with the terms of BOTH licenses.  If you
+want to redistribute only the components that use a particular
+license, under the terms of that license, you are responsible for
+compiling the appropriate distribution and omitting the components
+that are not covered by the license you use.
+
+-----------------------------------------------------------------------------
+
+LICENSES COVERING BASE NONPAREIL PACKAGE
+
+Most of the Nonpareil package is distributed under the terms of the
+the Free Software Foundation's General Public License, version 2, as
+detailed in the accompanying file LICENSES/GPL-2.txt.  This includes
+all of the source code to the simulator proper.
+
+The remaining portions of the package, most notably the contents of
+the ncd directory tree, and the .ncd files and other files derived
+from the files in the ncd directory tree, are distributed under the
+terms of the Creative Commons Attribution ShareAlike 2.5 license, as
+detailed in the accompanying file LICENSES/CC-BY-SA-2.5.html.
+
+Each file in the source tree bears a copyright notice and license
+information, the latter stating which license is applicable to that
+particular file.
+
+-----------------------------------------------------------------------------
+
+NON-FREE FILES IN SOURCE CODE REPOSITORY
+
+The Nonpareil source code repository (Subversion) contains additional
+files that are covered by other licenses not described here, but these
+files are not part of the base Nonpareil package.  For example, some
+of these files are used to build the Nonpareil-Voyager package, which
+is covered by the Creative Commons Attribution NonCommercial
+ShareAlike 2.5 license.  This license does not meet the Free Software
+Definition nor the Open Source Definition, so the covered files are
+not included in the base Nonpareil distribution.
+
+	http://www.gnu.org/philosophy/free-sw.html
+	http://www.opensource.org/docs/definition.php	
+
