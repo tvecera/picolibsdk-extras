@@ -53,7 +53,7 @@ void keypad_init(const uint8_t rows, const uint8_t cols, uint8_t *gpio_rows, uin
 	col_pins = gpio_cols;
 	key_num = rows * cols;
 
-	printf("Init, rows: %d, cols: %d, key_num: %d\n", rows, cols, key_num);
+	//printf("Init, rows: %d, cols: %d, key_num: %d\n", rows, cols, key_num);
 
 	key_map_to_char = malloc(key_num * sizeof(char) + 1);
 	key_last_press = malloc(key_num * sizeof(uint16_t));
@@ -120,7 +120,7 @@ void NOFLASH(keypad_scan)() {
 			if (gpio_get(row_pins[row]) == 0) {
 				// button is pressed for the first time
 				if (!key_press_map[i]) {
-					printf("Pressed %d, %d\n", row, col);
+					//printf("Pressed %d, %d\n", row, col);
 					key_last_press[i] = t + (KEY_REP_TIME1 - KEY_REP_TIME2);
 					key_press_map[i] = true;
 					keypad_write_key(i + 1);
@@ -137,7 +137,7 @@ void NOFLASH(keypad_scan)() {
 				// button is release - check stop of press
 				if (key_press_map[i]) {
 					if ((s16) (t - key_last_release[i]) >= (s16) KEY_REL_TIME) {
-						printf("Release %d, %d\n", row, col);
+						//printf("Release %d, %d\n", row, col);
 						key_press_map[i] = false;
 						keypad_write_key((i + 1) | KEY_RELEASE);
 					}

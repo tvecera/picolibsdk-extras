@@ -31,7 +31,6 @@ CSRC += nonpareil/voyager_lcd.c
 CSRC += src/nonpareil.c
 CSRC += src/sim.c
 
-CSRC += pico/st7789/st7789.c
 CSRC += pico/keypad.c
 
 SRC += pico/main.cpp

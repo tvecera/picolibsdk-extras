@@ -5,14 +5,21 @@
 #include "../src/include.h"
 #include "keypad.h"
 
-uint8_t gpio_rows[] = {22, 13, 12, 11, 10};
-uint8_t gpio_cols[] = {6, 7, 8, 9};
-constexpr char key_map[20] = {
-	'A', 'B', 'C', 'D',
-	'1', '2', '3', 'E',
-	'4', '5', '6', 'F',
-	'7', '8', '9', '-',
-	'O', '0', '#', '+',
+uint8_t gpio_rows[] = {27, 7, 28, 8, 6};
+uint8_t gpio_cols[] = {20, 16, 17, 18, 19, 21, 22, 26};
+constexpr char key_map[] = {
+	'A', 'B', 'C', 'D', 'E', 'F', '7', '8', '9', '/',
+	'U', 'T', 'I', 'Z', 'K', 'L', '4', '5', '6', '*',
+	'[', ']', 'V', 'Y', '\b', '\r', '1', '2', '3', '-',
+	'O', 'M', 'G', 'S', 'R', '0', '.', 'H', '+'
+};
+
+constexpr char keypad_key_map[] = {
+	0, 1, 2, 3, 4, 5, 6, 7,
+	10, 11, 12, 13, 14, 15, 16, 17,
+	20, 21, 22, 23, 24, 25, 26, 27,
+	30, 31, 32, 33, 34, 25, 35, 36,
+	8, 38, 18, 29, 28, 9, 37, 19
 };
 
 // HID key map array
@@ -58,7 +65,7 @@ int main() {
 	DrawClear();
 	SelFont8x8();
 	UsbHostInit();
-	keypad_init(5, 4, gpio_rows, gpio_cols, key_map);
+	keypad_init(5, 8, gpio_rows, gpio_cols, key_map);
 
 	sim_display_init(nullptr);
 	sim_t *sim = sim_init(nullptr, nullptr, nullptr);
@@ -74,7 +81,7 @@ int main() {
 		if (ch != NOCHAR) {
 			key = ch;
 			key &= KEY_MASK;
-			sim_key(sim, ch + 13, !(ch & KEY_RELEASE));
+			sim_key(sim, keypad_key_map[key - 1], !(ch & KEY_RELEASE));
 		} else {
 			get_key_idx(&idx, &release);
 			if (idx != -1) {

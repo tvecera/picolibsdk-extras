@@ -1,6 +1,7 @@
 CSRC += ${PICO_LIB_SDK_PATH}/_display/minivga/minivga.c
 CSRC += ${PICO_LIB_SDK_PATH}/_display/dvi/dvi.c
 CSRC += ${PICO_LIB_SDK_PATH}/_display/dvivga/dvivga.c
+CSRC += ${PICO_LIB_SDK_PATH}/_display/st7789/st7789.c
 CSRC += ${PICO_LIB_SDK_PATH}/_devices/pico/pico_init.c
 CSRC += ${PICO_LIB_SDK_PATH}/_devices/pico/pico_bat.c
 

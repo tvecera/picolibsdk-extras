@@ -25,10 +25,6 @@ extern "C" {
 #define  NOFLASH
 #endif
 
-#ifdef  PICO
-#include "../pico/st7789/st7789.h"
-#endif
-
 #include "../nonpareil/arch.h"
 #include "../nonpareil/platform.h"
 #include "../nonpareil/util.h"
